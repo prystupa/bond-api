@@ -32,6 +32,9 @@ class Action:
         self._name = name
         self._argument = {} if not argument else {"argument": argument}
 
+    def __eq__(self, other: 'Action'):
+        return self.name == other.name and self.argument == other.argument
+
     @staticmethod
     def turn_on() -> 'Action':
         """Turn device on (usually power)."""

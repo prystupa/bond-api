@@ -1,16 +1,20 @@
+"""Unit tests for Bond API wrapper."""
+
 import pytest
 from aioresponses import aioresponses, CallbackResult
 
 from bond_api import Bond, Action, Direction
 
 
-@pytest.fixture
-def bond():
+@pytest.fixture(name="bond")
+def bond_fixture():
+    """Creates Bond fixture."""
     return Bond("test-host", "test-token")
 
 
 @pytest.mark.asyncio
 async def test_version(bond: Bond):
+    """Tests version API."""
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/sys/version",
@@ -22,6 +26,7 @@ async def test_version(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_devices(bond: Bond):
+    """Tests API to get a list of device IDs."""
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices",
@@ -33,6 +38,7 @@ async def test_devices(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_device(bond: Bond):
+    """Tests API to get device details."""
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices/device-1",
@@ -44,6 +50,7 @@ async def test_device(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_device_properties(bond: Bond):
+    """Tests API to get device properties."""
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices/device-1/properties",
@@ -55,6 +62,7 @@ async def test_device_properties(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_device_state(bond: Bond):
+    """Tests API to get device state."""
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices/device-1/state",
@@ -66,6 +74,7 @@ async def test_device_state(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_turn_on(bond: Bond):
+    """Tests turn_on action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -80,6 +89,7 @@ async def test_turn_on(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_turn_off(bond: Bond):
+    """Tests turn_off action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -94,6 +104,7 @@ async def test_turn_off(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_open(bond: Bond):
+    """Tests open action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -108,6 +119,7 @@ async def test_open(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_close(bond: Bond):
+    """Tests close action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -122,6 +134,7 @@ async def test_close(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_hold(bond: Bond):
+    """Tests hold action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -136,6 +149,7 @@ async def test_hold(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_set_speed(bond: Bond):
+    """Tests set_speed action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 2}
@@ -150,6 +164,7 @@ async def test_set_speed(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_turn_light_on(bond: Bond):
+    """Tests turn_light_on action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -164,6 +179,7 @@ async def test_turn_light_on(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_turn_light_off(bond: Bond):
+    """Tests turn_light_off action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
@@ -178,6 +194,7 @@ async def test_turn_light_off(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_set_direction_forward(bond: Bond):
+    """Tests set_direction action delegates to API with correct value for forward."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 1}
@@ -192,6 +209,7 @@ async def test_set_direction_forward(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_set_direction_reverse(bond: Bond):
+    """Tests set_direction action delegates to API with correct value for reverse."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": -1}
@@ -206,6 +224,7 @@ async def test_set_direction_reverse(bond: Bond):
 
 @pytest.mark.asyncio
 async def test_set_flame(bond: Bond):
+    """Tests set_flame action delegates to API."""
     with aioresponses() as response:
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 50}

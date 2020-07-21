@@ -12,8 +12,8 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="bond_api",
-    version="0.1.2",
-    packages=find_packages(),
+    version="0.1.4",
+    packages=find_packages(exclude=['tests']),
 
     author="Eugene Prystupa",
     author_email="eugene.prystupa@gmail.com",
