@@ -12,7 +12,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="bond_api",
-    version="0.1.0",
+    version="0.1.2",
     packages=find_packages(),
 
     author="Eugene Prystupa",

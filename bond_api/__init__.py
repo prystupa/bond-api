@@ -2,3 +2,4 @@
 
 from .bond import Bond
 from .action import Action, Direction
+from .device_type import DeviceType
