@@ -13,20 +13,68 @@ class Direction(IntEnum):
 class Action:
     """Namespace for Bond API action helpers and constants."""
 
-    # Power (generic devices, fans, fireplaces)
+    # General actions
+    STOP = "Stop"
     TURN_ON = "TurnOn"
     TURN_OFF = "TurnOff"
-    # Covers
+    TOGGLE_POWER = "TogglePower"
+    SET_TIMER = "SetTimer"
+    SWITCH_MODE = "SwitchMode"
+
+    # Lights
+    TURN_LIGHT_ON = "TurnLightOn"
+    TURN_LIGHT_OFF = "TurnLightOff"
+    TOGGLE_LIGHT = "ToggleLight"
+    SET_BRIGHTNESS = "SetBrightness"
+    INCREASE_BRIGHTNESS = "IncreaseBrightness"
+    DECREASE_BRIGHTNESS = "DecreaseBrightness"
+    START_DIMMER = "StartDimmer"
+    TURN_UP_LIGHT_ON = "TurnUpLightOn"
+    TURN_DOWN_LIGHT_ON = "TurnDownLightOn"
+    TURN_UP_LIGHT_OFF = "TurnUpLightOff"
+    TURN_DOWN_LIGHT_OFF = "TurnDownLightOff"
+    TOGGLE_UP_LIGHT = "ToggleUpLight"
+    TOGGLE_DOWN_LIGHT = "ToggleDownLight"
+    START_UP_LIGHT_DIMMER = "StartUpLightDimmer"
+    START_DOWN_LIGHT_DIMMER = "StartDownLightDimmer"
+    START_INCREASING_BRIGHTNESS = "StartIncreasingBrightness"
+    START_DECREASING_BRIGHTNESS = "StartDecreasingBrightness"
+    SET_UP_LIGHT_BRIGHTNESS = "SetUpLightBrightness"
+    SET_DOWN_LIGHT_BRIGHTNESS = "SetDownLightBrightness"
+    INCREASE_UP_LIGHT_BRIGHTNESS = "IncreaseUpLightBrightness"
+    DECREASE_UP_LIGHT_BRIGHTNESS = "DecreaseUpLightBrightness"
+    INCREASE_DOWN_LIGHT_BRIGHTNESS = "IncreaseDownLightBrightness"
+    DECREASE_DOWN_LIGHT_BRIGHTNESS = "DecreaseDownLightBrightness"
+    CYCLE_UP_LIGHT_BRIGHTNESS = "CycleUpLightBrightness"
+    CYCLE_DOWN_LIGHT_BRIGHTNESS = "CycleDownLightBrightness"
+    CYCLE_BRIGHTNESS = "CycleBrightness"
+
+    # Fans
+    SET_SPEED = "SetSpeed"
+    INCREASE_SPEED = "IncreaseSpeed"
+    DECREASE_SPEED = "DecreaseSpeed"
+    BREEZE_ON = "BreezeOn"
+    BREEZE_OFF = "BreezeOff"
+    SET_BREEZE = "SetBreeze"
+    SET_DIRECTION = "SetDirection"
+    TOGGLE_DIRECTION = "ToggleDirection"
+
+    # Fireplaces
+    INCREASE_TEMPERATURE = "IncreaseTemperature"
+    DECREASE_TEMPERATURE = "DecreaseTemperature"
+    SET_FP_FAN = "SetFpFan"
+    TURN_FP_FAN_ON = "TurnFpFanOn"
+    TURN_FP_FAN_OFF = "TurnFpFanOff"
+    INCREASE_FLAME = "IncreaseFlame"
+    DECREASE_FLAME = "DecreaseFlame"
+    SET_FLAME = "SetFlame"
+
+    # Motorized Shades
     OPEN = "Open"
     CLOSE = "Close"
     HOLD = "Hold"
-    # Fans
-    SET_SPEED = "SetSpeed"
-    SET_DIRECTION = "SetDirection"
-    TURN_LIGHT_ON = "TurnLightOn"
-    TURN_LIGHT_OFF = "TurnLightOff"
-    # Fireplaces
-    SET_FLAME = "SetFlame"
+    PAIR = "Pair"
+    TOGGLE_OPEN = "ToggleOpen"
 
     def __init__(self, name: str, argument: Any = None):
         self._name = name
