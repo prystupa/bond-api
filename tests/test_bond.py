@@ -1,6 +1,7 @@
 """Unit tests for Bond API wrapper."""
 
 import pytest
+from aiohttp import ClientSession
 from aioresponses import aioresponses, CallbackResult
 
 from bond_api import Bond, Action, Direction
@@ -10,6 +11,20 @@ from bond_api import Bond, Action, Direction
 def bond_fixture():
     """Creates Bond fixture."""
     return Bond("test-host", "test-token")
+
+
+@pytest.mark.asyncio
+async def test_external_session():
+    """Tests using external session."""
+    async with ClientSession() as session:
+        bond: Bond = Bond("test-host", "test-token", session=session)
+        with aioresponses() as response:
+            response.get(
+                "http://test-host/v2/sys/version",
+                payload={"some": "version"}
+            )
+            actual = await bond.version()
+            assert actual == {"some": "version"}
 
 
 @pytest.mark.asyncio
