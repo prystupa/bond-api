@@ -17,14 +17,14 @@ def test_compare_device_types():
     assert DeviceType.GENERIC_DEVICE == "GX"
     assert DeviceType.is_generic("GX")
 
-    assert DeviceType.AIR_CONDITIONER = "AC"
+    assert DeviceType.AIR_CONDITIONER == "AC"
     assert DeviceType.is_air_conditioner( "AC")
 
-    assert DeviceType.GARAGE_DOOR = "GD"
+    assert DeviceType.GARAGE_DOOR == "GD"
     assert DeviceType.is_garage_door("GD")
 
-    assert DeviceType.BIDET = "BD"
+    assert DeviceType.BIDET == "BD"
     assert DeviceType.is_bidet("BD")
 
-    assert DeviceType.LIGHT = "LT"
+    assert DeviceType.LIGHT == "LT"
     assert DeviceType.is_light("LT")
