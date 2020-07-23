@@ -2,7 +2,7 @@
 
 from typing import List, Optional, Callable, Any
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 
 from .action import Action
 
@@ -10,10 +10,14 @@ from .action import Action
 class Bond:
     """Bond API."""
 
-    def __init__(self, host: str, token: str, *, session: Optional[ClientSession] = None):
+    def __init__(self, host: str, token: str, *,
+                 session: Optional[ClientSession] = None,
+                 timeout: Optional[ClientTimeout] = None):
         """Initialize Bond with provided host and token."""
         self._host = host
-        self._headers = {'BOND-Token': token}
+        self._api_kwargs = {"headers": {"BOND-Token": token}}
+        if timeout:
+            self._api_kwargs["timeout"] = timeout
         self._session = session
 
     async def version(self) -> dict:
@@ -44,7 +48,7 @@ class Bond:
         async def put(session: ClientSession) -> None:
             async with session.put(
                     f"http://{self._host}{path}",
-                    headers=self._headers,
+                    **self._api_kwargs,
                     json=action.argument
             ) as response:
                 response.raise_for_status()
@@ -53,7 +57,7 @@ class Bond:
 
     async def __get(self, path) -> dict:
         async def get(session: ClientSession) -> dict:
-            async with session.get(f"http://{self._host}{path}", headers=self._headers) as response:
+            async with session.get(f"http://{self._host}{path}", **self._api_kwargs) as response:
                 response.raise_for_status()
                 return await response.json()
 
