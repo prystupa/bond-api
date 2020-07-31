@@ -209,6 +209,21 @@ async def test_turn_light_off(bond: Bond):
 
 
 @pytest.mark.asyncio
+async def test_set_brightness(bond: Bond):
+    """Tests set_brightness action delegates to API."""
+    with aioresponses() as response:
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 50}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/SetBrightness",
+            callback=callback
+        )
+        await bond.action("test-device-id", Action.set_brightness(50))
+
+
+@pytest.mark.asyncio
 async def test_set_direction_forward(bond: Bond):
     """Tests set_direction action delegates to API with correct value for forward."""
     with aioresponses() as response:

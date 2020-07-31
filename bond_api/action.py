@@ -129,6 +129,11 @@ class Action:
         return Action(Action.TURN_LIGHT_OFF)
 
     @staticmethod
+    def set_brightness(brightness: int) -> 'Action':
+        """Sets brightness of the light as percentage value, 1-100."""
+        return Action(Action.SET_BRIGHTNESS, brightness)
+
+    @staticmethod
     def set_flame(flame: int) -> 'Action':
         """Sets the flame to given intensity in percent."""
         return Action(Action.SET_FLAME, flame)
