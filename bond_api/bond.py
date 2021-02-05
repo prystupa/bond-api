@@ -24,6 +24,10 @@ class Bond:
         """Return the version of hub/bridge reported by API."""
         return await self.__get("/v2/sys/version")
 
+    async def bridge(self) -> dict:
+        """Return the name and location of the bridge."""
+        return await self.__get("/v2/bridge")
+
     async def devices(self) -> List[str]:
         """Return the list of available device IDs reported by API."""
         json = await self.__get("/v2/devices")

@@ -41,6 +41,18 @@ async def test_version(bond: Bond):
 
 
 @pytest.mark.asyncio
+async def test_bridge(bond: Bond):
+    """Tests bridge API."""
+    with aioresponses() as response:
+        response.get(
+            "http://test-host/v2/bridge",
+            payload={"name": "name", "location": "location"}
+        )
+        actual = await bond.bridge()
+        assert actual == {"name": "name", "location": "location"}
+
+
+@pytest.mark.asyncio
 async def test_devices(bond: Bond):
     """Tests API to get a list of device IDs."""
     with aioresponses() as response:
