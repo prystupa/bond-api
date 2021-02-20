@@ -37,6 +37,10 @@ class Bond:
         """Return the version of hub/bridge reported by API."""
         return await self.__get("/v2/sys/version")
 
+    async def token(self) -> dict:
+        """Return the token after power rest or proof of ownership event."""
+        return await self.__get("/v2/token")
+
     async def bridge(self) -> dict:
         """Return the name and location of the bridge."""
         return await self.__get("/v2/bridge")
