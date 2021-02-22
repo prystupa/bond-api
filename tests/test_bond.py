@@ -53,6 +53,18 @@ async def test_bridge(bond: Bond):
 
 
 @pytest.mark.asyncio
+async def test_token(bond: Bond):
+    """Tests token API."""
+    with aioresponses() as response:
+        response.get(
+            "http://test-host/v2/token",
+            payload={"locked": 0,"token": "8f514567acaf9869"}
+        )
+        actual = await bond.token()
+        assert actual == {"locked": 0,"token": "8f514567acaf9869"}
+
+
+@pytest.mark.asyncio
 async def test_devices(bond: Bond):
     """Tests API to get a list of device IDs."""
     with aioresponses() as response:
