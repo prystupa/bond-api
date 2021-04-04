@@ -7,6 +7,7 @@ from asyncio import transports
 from typing import Any, Callable, List, Optional
 
 from aiohttp import ClientSession, ClientTimeout
+from aiohttp.client_exceptions import ServerDisconnectedError
 
 from .action import Action
 
@@ -89,7 +90,12 @@ class Bond:
             async with ClientSession() as request_session:
                 return await handler(request_session)
         else:
-            return await handler(self._session)
+            try:
+                return await handler(self._session)
+            except ServerDisconnectedError:
+                # bond has a short connection close time
+                # so we need to retry if we idled for a bit
+                return await handler(self._session)
 
 
 class BPUPSubscriptions:
