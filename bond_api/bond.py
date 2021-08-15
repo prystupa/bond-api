@@ -65,15 +65,23 @@ class Bond:
 
     async def action(self, device_id: str, action: Action) -> None:
         """Execute given action for a given device."""
-        path = f"/v2/devices/{device_id}/actions/{action.name}"
+        if Action.name == Action.SET_STATE_BELIEF:
+            path = f"/v2/devices/{device_id}/state"
+            async def patch(session: ClientSession) -> None:
+                async with session.patch(
+                    f"http://{self._host}{path}", **self._api_kwargs, json=action.argument
+                ) as response:
+                    response.raise_for_status()
+            await self.__call(patch)
+        else:
+            path = f"/v2/devices/{device_id}/actions/{action.name}"
+            async def put(session: ClientSession) -> None:
+                async with session.put(
+                    f"http://{self._host}{path}", **self._api_kwargs, json=action.argument
+                ) as response:
+                    response.raise_for_status()
+            await self.__call(put)
 
-        async def put(session: ClientSession) -> None:
-            async with session.put(
-                f"http://{self._host}{path}", **self._api_kwargs, json=action.argument
-            ) as response:
-                response.raise_for_status()
-
-        await self.__call(put)
 
     async def __get(self, path) -> dict:
         async def get(session: ClientSession) -> dict:

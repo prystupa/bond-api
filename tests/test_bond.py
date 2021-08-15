@@ -203,6 +203,66 @@ async def test_set_speed(bond: Bond):
 
 
 @pytest.mark.asyncio
+async def test_set_speed_belief(bond: Bond):
+    """Tests set_speed_belief action delegates to API."""
+    with aioresponses() as response:
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"speed": 2}
+            return CallbackResult()
+
+        response.patch(
+            "http://test-host/v2/devices/test-device-id/state",
+            callback=callback
+        )
+        await bond.action("test-device-id", Action.set_speed_belief(2))
+
+
+@pytest.mark.asyncio
+async def test_set_brightness_belief(bond: Bond):
+    """Tests set_brightness_belief action delegates to API."""
+    with aioresponses() as response:
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"brightness": 2}
+            return CallbackResult()
+
+        response.patch(
+            "http://test-host/v2/devices/test-device-id/state",
+            callback=callback
+        )
+        await bond.action("test-device-id", Action.set_brightness_belief(2))
+
+
+@pytest.mark.asyncio
+async def test_set_power_state_belief(bond: Bond):
+    """Tests set_power_state_belief action delegates to API."""
+    with aioresponses() as response:
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"power": 1}
+            return CallbackResult()
+
+        response.patch(
+            "http://test-host/v2/devices/test-device-id/state",
+            callback=callback
+        )
+        await bond.action("test-device-id", Action.set_power_state_belief(True))
+
+
+@pytest.mark.asyncio
+async def test_set_light_state_belief(bond: Bond):
+    """Tests set_light_state_belief action delegates to API."""
+    with aioresponses() as response:
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"light": 0}
+            return CallbackResult()
+
+        response.patch(
+            "http://test-host/v2/devices/test-device-id/state",
+            callback=callback
+        )
+        await bond.action("test-device-id", Action.set_light_state_belief(False))
+
+
+@pytest.mark.asyncio
 async def test_turn_light_on(bond: Bond):
     """Tests turn_light_on action delegates to API."""
     with aioresponses() as response:
