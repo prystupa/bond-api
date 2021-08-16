@@ -65,7 +65,7 @@ class Bond:
 
     async def action(self, device_id: str, action: Action) -> None:
         """Execute given action for a given device."""
-        if Action.name == Action.SET_STATE_BELIEF:
+        if action.name == Action.SET_STATE_BELIEF:
             path = f"/v2/devices/{device_id}/state"
             async def patch(session: ClientSession) -> None:
                 async with session.patch(
