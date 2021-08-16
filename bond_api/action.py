@@ -20,6 +20,7 @@ class Action:
     TOGGLE_POWER = "TogglePower"
     SET_TIMER = "SetTimer"
     SWITCH_MODE = "SwitchMode"
+    SET_STATE_BELIEF = "state"
 
     # Lights
     TURN_LIGHT_ON = "TurnLightOn"
@@ -78,7 +79,10 @@ class Action:
 
     def __init__(self, name: str, argument: Any = None):
         self._name = name
-        self._argument = {} if not argument else {"argument": argument}
+        if self._name == Action.SET_STATE_BELIEF:
+            self._argument = {} if not argument else argument
+        else:
+            self._argument = {} if not argument else {"argument": argument}
 
     def __eq__(self, other: 'Action'):
         return self.name == other.name and self.argument == other.argument
@@ -114,6 +118,11 @@ class Action:
         return Action(Action.SET_SPEED, speed)
 
     @staticmethod
+    def set_speed_belief(speed: int) -> 'Action':
+        """Sets fan rotation to a provided speed."""
+        return Action(Action.SET_STATE_BELIEF, {"speed": speed})
+
+    @staticmethod
     def set_direction(direction: Direction) -> 'Action':
         """Sets fan rotation direction."""
         return Action(Action.SET_DIRECTION, direction.value)
@@ -129,9 +138,24 @@ class Action:
         return Action(Action.TURN_LIGHT_OFF)
 
     @staticmethod
+    def set_light_state_belief(state: bool) -> 'Action':
+        """Sets light state belief, true or false."""
+        return Action(Action.SET_STATE_BELIEF, {"light": int(state)})
+
+    @staticmethod
+    def set_power_state_belief(state: bool) -> 'Action':
+        """Sets light state belief, true or false."""
+        return Action(Action.SET_STATE_BELIEF, {"power": int(state)})
+
+    @staticmethod
     def set_brightness(brightness: int) -> 'Action':
         """Sets brightness of the light as percentage value, 1-100."""
         return Action(Action.SET_BRIGHTNESS, brightness)
+
+    @staticmethod
+    def set_brightness_belief(brightness: int) -> 'Action':
+        """Sets brightness belief of the light as percentage value, 1-100."""
+        return Action(Action.SET_STATE_BELIEF, {"brightness": brightness})
 
     @staticmethod
     def set_flame(flame: int) -> 'Action':
