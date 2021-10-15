@@ -3,7 +3,7 @@
 import asyncio
 import json
 import time
-from asyncio import transports
+import logging
 from typing import Any, Callable, List, Optional
 
 from aiohttp import ClientSession, ClientTimeout
@@ -14,6 +14,7 @@ from .action import Action
 BPUP_INIT_PUSH_MESSAGE = b"\n"
 BPUP_PORT = 30007
 BPUP_ALIVE_TIMEOUT = 70
+_LOGGER = logging.getLogger(__name__)
 
 
 class Bond:
@@ -67,21 +68,28 @@ class Bond:
         """Execute given action for a given device."""
         if action.name == Action.SET_STATE_BELIEF:
             path = f"/v2/devices/{device_id}/state"
+
             async def patch(session: ClientSession) -> None:
                 async with session.patch(
-                    f"http://{self._host}{path}", **self._api_kwargs, json=action.argument
+                    f"http://{self._host}{path}",
+                    **self._api_kwargs,
+                    json=action.argument,
                 ) as response:
                     response.raise_for_status()
+
             await self.__call(patch)
         else:
             path = f"/v2/devices/{device_id}/actions/{action.name}"
+
             async def put(session: ClientSession) -> None:
                 async with session.put(
-                    f"http://{self._host}{path}", **self._api_kwargs, json=action.argument
+                    f"http://{self._host}{path}",
+                    **self._api_kwargs,
+                    json=action.argument,
                 ) as response:
                     response.raise_for_status()
-            await self.__call(put)
 
+            await self.__call(put)
 
     async def __get(self, path) -> dict:
         async def get(session: ClientSession) -> dict:
@@ -140,7 +148,7 @@ class BPUPSubscriptions:
             callback(json_msg["b"])
 
 
-class BPUProtocol:
+class BPUProtocol(asyncio.Protocol):
     """Implements BPU Protocol."""
 
     def __init__(self, loop, bpup_subscriptions):
@@ -160,6 +168,8 @@ class BPUProtocol:
 
     def send_keep_alive(self):
         """Send a keep alive every 60 seconds per the protocol."""
+        if not self.transport:
+            return
         self.transport.sendto(BPUP_INIT_PUSH_MESSAGE)
         self.keep_alive = self.loop.call_later(60, self.send_keep_alive)
 
@@ -168,15 +178,28 @@ class BPUProtocol:
         self.bpup_subscriptions.notify(json.loads(data.decode()[:-1]))
 
     def error_received(self, exc):
-        """Ignore errors."""
-        return
+        """Log errors."""
+        _LOGGER.error(
+            "BPUP error (peer:%s sock:%s): %s",
+            self.transport.get_extra_info("peername"),
+            self.transport.get_extra_info("sockname"),
+            exc,
+        )
 
     def connection_lost(self, exc):
-        """Ignore connection lost."""
-        return
+        """Log connection lost."""
+        if not exc:
+            return
+        _LOGGER.error(
+            "BPUP connection lost (peer:%s sock:%s): %s",
+            self.transport.get_extra_info("peername"),
+            self.transport.get_extra_info("sockname"),
+            exc,
+        )
 
     def stop(self):
         """Stop the client."""
+        _LOGGER.debug("BPUP connection stopping: %s", self.transport)
         if self.transport:
             self.transport.close()
 
