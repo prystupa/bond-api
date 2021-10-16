@@ -37,4 +37,6 @@ jobs:
         flake8 bond_api tests --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --cov-report term-missing --cov=bond_api
+        pytest --cov-report term-missing --cov-report=xml --cov=bond_api
+    - name: Upload codecov
+      uses: codecov/codecov-action@v1
