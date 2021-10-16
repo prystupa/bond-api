@@ -2,9 +2,9 @@
 
 import pytest
 from aiohttp import ClientSession, ClientTimeout
-from aioresponses import aioresponses, CallbackResult
+from aioresponses import CallbackResult, aioresponses
 
-from bond_api import Bond, Action, Direction
+from bond_api import Action, Bond, Direction
 
 
 @pytest.fixture(name="bond")
@@ -20,10 +20,7 @@ async def test_optional_overrides():
         timeout: ClientTimeout = ClientTimeout(total=1)
         bond: Bond = Bond("test-host", "test-token", session=session, timeout=timeout)
         with aioresponses() as response:
-            response.get(
-                "http://test-host/v2/sys/version",
-                payload={"some": "version"}
-            )
+            response.get("http://test-host/v2/sys/version", payload={"some": "version"})
             actual = await bond.version()
             assert actual == {"some": "version"}
 
@@ -32,10 +29,7 @@ async def test_optional_overrides():
 async def test_version(bond: Bond):
     """Tests version API."""
     with aioresponses() as response:
-        response.get(
-            "http://test-host/v2/sys/version",
-            payload={"some": "version"}
-        )
+        response.get("http://test-host/v2/sys/version", payload={"some": "version"})
         actual = await bond.version()
         assert actual == {"some": "version"}
 
@@ -46,7 +40,7 @@ async def test_bridge(bond: Bond):
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/bridge",
-            payload={"name": "name", "location": "location"}
+            payload={"name": "name", "location": "location"},
         )
         actual = await bond.bridge()
         assert actual == {"name": "name", "location": "location"}
@@ -58,10 +52,10 @@ async def test_token(bond: Bond):
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/token",
-            payload={"locked": 0,"token": "8f514567acaf9869"}
+            payload={"locked": 0, "token": "8f514567acaf9869"},
         )
         actual = await bond.token()
-        assert actual == {"locked": 0,"token": "8f514567acaf9869"}
+        assert actual == {"locked": 0, "token": "8f514567acaf9869"}
 
 
 @pytest.mark.asyncio
@@ -70,7 +64,11 @@ async def test_devices(bond: Bond):
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices",
-            payload={"_": "some-hash", "device-1": "some-device-1", "device-2": "some-device-2"}
+            payload={
+                "_": "some-hash",
+                "device-1": "some-device-1",
+                "device-2": "some-device-2",
+            },
         )
         actual = await bond.devices()
         assert actual == ["device-1", "device-2"]
@@ -81,8 +79,7 @@ async def test_device(bond: Bond):
     """Tests API to get device details."""
     with aioresponses() as response:
         response.get(
-            "http://test-host/v2/devices/device-1",
-            payload={"some": "device details"}
+            "http://test-host/v2/devices/device-1", payload={"some": "device details"}
         )
         actual = await bond.device("device-1")
         assert actual == {"some": "device details"}
@@ -94,7 +91,7 @@ async def test_device_properties(bond: Bond):
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices/device-1/properties",
-            payload={"some": "device properties"}
+            payload={"some": "device properties"},
         )
         actual = await bond.device_properties("device-1")
         assert actual == {"some": "device properties"}
@@ -106,7 +103,7 @@ async def test_device_state(bond: Bond):
     with aioresponses() as response:
         response.get(
             "http://test-host/v2/devices/device-1/state",
-            payload={"some": "device state"}
+            payload={"some": "device state"},
         )
         actual = await bond.device_state("device-1")
         assert actual == {"some": "device state"}
@@ -116,13 +113,14 @@ async def test_device_state(bond: Bond):
 async def test_turn_on(bond: Bond):
     """Tests turn_on action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/TurnOn",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.turn_on())
 
@@ -131,13 +129,14 @@ async def test_turn_on(bond: Bond):
 async def test_turn_off(bond: Bond):
     """Tests turn_off action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/TurnOff",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.turn_off())
 
@@ -146,13 +145,13 @@ async def test_turn_off(bond: Bond):
 async def test_open(bond: Bond):
     """Tests open action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
-            "http://test-host/v2/devices/test-device-id/actions/Open",
-            callback=callback
+            "http://test-host/v2/devices/test-device-id/actions/Open", callback=callback
         )
         await bond.action("test-device-id", Action.open())
 
@@ -161,13 +160,14 @@ async def test_open(bond: Bond):
 async def test_close(bond: Bond):
     """Tests close action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/Close",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.close())
 
@@ -176,13 +176,13 @@ async def test_close(bond: Bond):
 async def test_hold(bond: Bond):
     """Tests hold action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
-            "http://test-host/v2/devices/test-device-id/actions/Hold",
-            callback=callback
+            "http://test-host/v2/devices/test-device-id/actions/Hold", callback=callback
         )
         await bond.action("test-device-id", Action.hold())
 
@@ -191,13 +191,14 @@ async def test_hold(bond: Bond):
 async def test_set_speed(bond: Bond):
     """Tests set_speed action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 2}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/SetSpeed",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.set_speed(2))
 
@@ -206,13 +207,13 @@ async def test_set_speed(bond: Bond):
 async def test_set_speed_belief(bond: Bond):
     """Tests set_speed_belief action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"speed": 2}
             return CallbackResult()
 
         response.patch(
-            "http://test-host/v2/devices/test-device-id/state",
-            callback=callback
+            "http://test-host/v2/devices/test-device-id/state", callback=callback
         )
         await bond.action("test-device-id", Action.set_speed_belief(2))
 
@@ -221,13 +222,13 @@ async def test_set_speed_belief(bond: Bond):
 async def test_set_brightness_belief(bond: Bond):
     """Tests set_brightness_belief action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"brightness": 2}
             return CallbackResult()
 
         response.patch(
-            "http://test-host/v2/devices/test-device-id/state",
-            callback=callback
+            "http://test-host/v2/devices/test-device-id/state", callback=callback
         )
         await bond.action("test-device-id", Action.set_brightness_belief(2))
 
@@ -236,13 +237,13 @@ async def test_set_brightness_belief(bond: Bond):
 async def test_set_power_state_belief(bond: Bond):
     """Tests set_power_state_belief action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"power": 1}
             return CallbackResult()
 
         response.patch(
-            "http://test-host/v2/devices/test-device-id/state",
-            callback=callback
+            "http://test-host/v2/devices/test-device-id/state", callback=callback
         )
         await bond.action("test-device-id", Action.set_power_state_belief(True))
 
@@ -251,13 +252,13 @@ async def test_set_power_state_belief(bond: Bond):
 async def test_set_light_state_belief(bond: Bond):
     """Tests set_light_state_belief action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"light": 0}
             return CallbackResult()
 
         response.patch(
-            "http://test-host/v2/devices/test-device-id/state",
-            callback=callback
+            "http://test-host/v2/devices/test-device-id/state", callback=callback
         )
         await bond.action("test-device-id", Action.set_light_state_belief(False))
 
@@ -266,13 +267,14 @@ async def test_set_light_state_belief(bond: Bond):
 async def test_turn_light_on(bond: Bond):
     """Tests turn_light_on action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/TurnLightOn",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.turn_light_on())
 
@@ -281,13 +283,14 @@ async def test_turn_light_on(bond: Bond):
 async def test_turn_light_off(bond: Bond):
     """Tests turn_light_off action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/TurnLightOff",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.turn_light_off())
 
@@ -296,13 +299,14 @@ async def test_turn_light_off(bond: Bond):
 async def test_set_brightness(bond: Bond):
     """Tests set_brightness action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 50}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/SetBrightness",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.set_brightness(50))
 
@@ -311,13 +315,14 @@ async def test_set_brightness(bond: Bond):
 async def test_set_direction_forward(bond: Bond):
     """Tests set_direction action delegates to API with correct value for forward."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 1}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/SetDirection",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.set_direction(Direction.FORWARD))
 
@@ -326,13 +331,14 @@ async def test_set_direction_forward(bond: Bond):
 async def test_set_direction_reverse(bond: Bond):
     """Tests set_direction action delegates to API with correct value for reverse."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": -1}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/SetDirection",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.set_direction(Direction.REVERSE))
 
@@ -341,12 +347,13 @@ async def test_set_direction_reverse(bond: Bond):
 async def test_set_flame(bond: Bond):
     """Tests set_flame action delegates to API."""
     with aioresponses() as response:
+
         def callback(_url, **kwargs):
             assert kwargs.get("json") == {"argument": 50}
             return CallbackResult()
 
         response.put(
             "http://test-host/v2/devices/test-device-id/actions/SetFlame",
-            callback=callback
+            callback=callback,
         )
         await bond.action("test-device-id", Action.set_flame(50))
