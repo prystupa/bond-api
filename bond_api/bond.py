@@ -1,20 +1,11 @@
 """Bond Local API wrapper."""
 
-import asyncio
-import json
-import time
-import logging
 from typing import Any, Callable, List, Optional
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ServerDisconnectedError
 
 from .action import Action
-
-BPUP_INIT_PUSH_MESSAGE = b"\n"
-BPUP_PORT = 30007
-BPUP_ALIVE_TIMEOUT = 70
-_LOGGER = logging.getLogger(__name__)
 
 
 class Bond:
@@ -112,104 +103,3 @@ class Bond:
                 # bond has a short connection close time
                 # so we need to retry if we idled for a bit
                 return await handler(self._session)
-
-
-class BPUPSubscriptions:
-    """Store BPUP subscriptions."""
-
-    def __init__(self):
-        """Init and store callbacks."""
-        self._callbacks = {}
-        self.last_message_time = 0
-
-    @property
-    def alive(self):
-        return (time.time() - self.last_message_time) < BPUP_ALIVE_TIMEOUT
-
-    def subscribe(self, device_id, callback):
-        """Subscribe to BPUP updates."""
-        self._callbacks.setdefault(device_id, []).append(callback)
-
-    def unsubscribe(self, device_id, callback):
-        """Unsubscribe from BPUP updates."""
-        self._callbacks[device_id].remove(callback)
-
-    def notify(self, json_msg):
-        """Notify subscribers of an update."""
-        self.last_message_time = time.time()
-
-        if json_msg.get("s") != 200:
-            return
-
-        topic = json_msg["t"].split("/")
-        device_id = topic[1]
-
-        for callback in self._callbacks.get(device_id, []):
-            callback(json_msg["b"])
-
-
-class BPUProtocol(asyncio.Protocol):
-    """Implements BPU Protocol."""
-
-    def __init__(self, loop, bpup_subscriptions):
-        """Create BPU Protocol."""
-        self.loop = loop
-        self.bpup_subscriptions = bpup_subscriptions
-        self.transport = None
-        self.keep_alive = None
-
-    def connection_made(self, transport):
-        """Connect or reconnect to the device."""
-        self.transport = transport
-        if self.keep_alive:
-            self.keep_alive.cancel()
-            self.keep_alive = None
-        self.send_keep_alive()
-
-    def send_keep_alive(self):
-        """Send a keep alive every 60 seconds per the protocol."""
-        if not self.transport:
-            return
-        self.transport.sendto(BPUP_INIT_PUSH_MESSAGE)
-        self.keep_alive = self.loop.call_later(60, self.send_keep_alive)
-
-    def datagram_received(self, data, addr):
-        """Process incoming state changes."""
-        self.bpup_subscriptions.notify(json.loads(data.decode()[:-1]))
-
-    def error_received(self, exc):
-        """Log errors."""
-        _LOGGER.error(
-            "BPUP error (peer:%s sock:%s): %s",
-            self.transport.get_extra_info("peername"),
-            self.transport.get_extra_info("sockname"),
-            exc,
-        )
-
-    def connection_lost(self, exc):
-        """Log connection lost."""
-        if not exc:
-            return
-        _LOGGER.error(
-            "BPUP connection lost (peer:%s sock:%s): %s",
-            self.transport.get_extra_info("peername"),
-            self.transport.get_extra_info("sockname"),
-            exc,
-        )
-
-    def stop(self):
-        """Stop the client."""
-        _LOGGER.debug("BPUP connection stopping: %s", self.transport)
-        if self.transport:
-            self.transport.close()
-
-
-async def start_bpup(host_ip_addr, bpup_subscriptions):
-    """Create the socket and protocol."""
-    loop = asyncio.get_event_loop()
-
-    _, protocol = await loop.create_datagram_endpoint(
-        lambda: BPUProtocol(loop, bpup_subscriptions),
-        remote_addr=(host_ip_addr, BPUP_PORT),
-    )
-    return protocol.stop
