@@ -1,5 +1,5 @@
 import asyncio
-
+import logging
 
 from bond_api import BPUPSubscriptions, start_bpup
 
@@ -18,6 +18,8 @@ async def main(ip_address):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+
     print("Enter the device ip:")
     ip_address = input().strip()
     loop = asyncio.get_event_loop()
