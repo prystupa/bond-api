@@ -38,7 +38,7 @@ class BPUPSubscriptions:
         """Unsubscribe from BPUP updates."""
         self._callbacks[device_id].remove(callback)
 
-    def notify(self, json_msg: dict[str, Any]) -> None:
+    def notify(self, json_msg: Dict[str, Any]) -> None:
         """Notify subscribers of an update."""
         self.last_message_time = time.monotonic()
 
