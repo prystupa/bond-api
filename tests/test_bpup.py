@@ -135,7 +135,7 @@ async def test_protocol_subscriptions(transport):
     )
 
     bpup_protocol.datagram_received(
-        b'{"B":"KNKSADE12345","d":0,"v":"v2.29.2-beta","t":"devices/1/state","i":"05000047a2780de5","f":100,"s":200,"m":0,"x":"bond","b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
+        b'{"t":"devices/1/state","s":200,"b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
         MOCK_ADDR,
     )
 
@@ -148,7 +148,7 @@ async def test_protocol_subscriptions(transport):
     }
 
     bpup_protocol.datagram_received(
-        b'{"B":"KNKSADE12345","d":0,"v":"v2.29.2-beta","t":"devices/1/state","i":"05000047a2780de5","f":100,"s":500,"m":0,"x":"bond","b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
+        b'{"t":"devices/1/state","s":200,"b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
         MOCK_ADDR,
     )
     # 500 error should not trigger a new message
@@ -163,7 +163,7 @@ async def test_protocol_subscriptions(transport):
     last_msg = {}
     bpup_subscriptions.unsubscribe("1", _on_new_message)
     bpup_protocol.datagram_received(
-        b'{"B":"KNKSADE12345","d":0,"v":"v2.29.2-beta","t":"devices/1/state","i":"05000047a2780de5","f":100,"s":200,"m":0,"x":"bond","b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
+        b'{"t":"devices/1/state","s":200,"b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
         MOCK_ADDR,
     )
     assert last_msg == {}
