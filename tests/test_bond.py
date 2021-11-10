@@ -157,6 +157,22 @@ async def test_open(bond: Bond):
 
 
 @pytest.mark.asyncio
+async def test_tilt_open(bond: Bond):
+    """Tests tilt open action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/TiltOpen",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.tilt_open())
+
+
+@pytest.mark.asyncio
 async def test_close(bond: Bond):
     """Tests close action delegates to API."""
     with aioresponses() as response:
@@ -170,6 +186,22 @@ async def test_close(bond: Bond):
             callback=callback,
         )
         await bond.action("test-device-id", Action.close())
+
+
+@pytest.mark.asyncio
+async def test_tilt_close(bond: Bond):
+    """Tests tilt close action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/TiltClose",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.tilt_close())
 
 
 @pytest.mark.asyncio
