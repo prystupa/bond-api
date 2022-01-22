@@ -79,8 +79,13 @@ class BPUProtocol(asyncio.Protocol):
 
     def datagram_received(self, data: bytes, addr: Any) -> None:
         """Process incoming state changes."""
-        _LOGGER.debug("BPUP message: %s", data)
-        self.bpup_subscriptions.notify(json.loads(data.decode()[:-1]))
+        _LOGGER.debug("%s: BPUP message: %s", addr, data)
+        try:
+            self.bpup_subscriptions.notify(json.loads(data.decode().rstrip("\n")))
+        except json.JSONDecodeError as ex:
+            _LOGGER.warning(
+                "%s: Failed to process BPUP message: %s: %s", addr, data, ex
+            )
 
     def error_received(self, exc: Optional[Exception]) -> None:
         """Log errors."""

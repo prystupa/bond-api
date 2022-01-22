@@ -3,6 +3,7 @@
 
 class DeviceType:
     """Bond Device type enumeration."""
+
     CEILING_FAN = "CF"
     MOTORIZED_SHADES = "MS"
     FIREPLACE = "FP"
