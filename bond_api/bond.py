@@ -3,7 +3,7 @@
 from typing import Any, Callable, List, Optional
 
 from aiohttp import ClientSession, ClientTimeout
-from aiohttp.client_exceptions import ServerDisconnectedError
+from aiohttp.client_exceptions import ServerDisconnectedError, ClientOSError
 
 from .action import Action
 
@@ -99,7 +99,7 @@ class Bond:
         else:
             try:
                 return await handler(self._session)
-            except ServerDisconnectedError:
+            except (ClientOSError, ServerDisconnectedError):
                 # bond has a short connection close time
                 # so we need to retry if we idled for a bit
                 return await handler(self._session)
