@@ -116,7 +116,7 @@ async def test_protocol_keep_connection_lost_with_error(transport, caplog):
 
 
 @pytest.mark.asyncio
-async def test_protocol_subscriptions(transport):
+async def test_protocol_subscriptions(transport, caplog):
     bpup_subscriptions = BPUPSubscriptions()
     bpup_protocol = BPUProtocol(bpup_subscriptions)
     last_msg = None
@@ -167,6 +167,19 @@ async def test_protocol_subscriptions(transport):
         MOCK_ADDR,
     )
     assert last_msg == {}
+
+    bpup_protocol.datagram_received(
+        b'{"B":"KVPRBDGXXXXX","_error_id":633,"_error_msg":"BPUP client timeout"}',
+        MOCK_ADDR,
+    )
+    assert last_msg == {}
+
+    bpup_protocol.datagram_received(
+        b"GIGO",
+        MOCK_ADDR,
+    )
+    assert "Failed to process BPUP message" in caplog.text
+    assert "GIGO" in caplog.text
 
 
 @pytest.mark.asyncio
