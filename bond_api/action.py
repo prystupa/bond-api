@@ -50,6 +50,11 @@ class Action:
     CYCLE_UP_LIGHT_BRIGHTNESS = "CycleUpLightBrightness"
     CYCLE_DOWN_LIGHT_BRIGHTNESS = "CycleDownLightBrightness"
     CYCLE_BRIGHTNESS = "CycleBrightness"
+    CYCLE_COLOR_TEMP = "CycleColorTemp"
+    SET_COLOR_TEMP = "SetColorTemp"
+    CYCLE_COLOR_TEMP_PRESET = "CycleColorTempPreset"
+    DECREASE_COLOR_TEMP = "DecreaseColorTemp"
+    INCREASE_COLOR_TEMP = "IncreaseColorTemp"
 
     # Fans
     SET_SPEED = "SetSpeed"
@@ -79,6 +84,8 @@ class Action:
     HOLD = "Hold"
     PAIR = "Pair"
     TOGGLE_OPEN = "ToggleOpen"
+    PRESET = "Preset"
+    SET_POSITION = "SetPosition"
 
     def __init__(self, name: str, argument: Any = None):
         self._name = name
@@ -166,6 +173,21 @@ class Action:
         return Action(Action.SET_BRIGHTNESS, brightness)
 
     @staticmethod
+    def set_color_temperature(temperature: int) -> "Action":
+        """Sets color temperature of the light in Kelin. Resolution: 100 K."""
+        return Action(Action.SET_COLOR_TEMP, temperature)
+
+    @staticmethod
+    def increase_color_temperature(temperature: int) -> "Action":
+        """Increases color temperature a specified number of degrees K. Implicitly turn Light on."""
+        return Action(Action.INCREASE_COLOR_TEMP, temperature)
+
+    @staticmethod
+    def decrease_color_temperature(temperature: int) -> "Action":
+        """Decreases color temperature a specified number of degrees K. Implicitly turn Light on."""
+        return Action(Action.DECREASE_COLOR_TEMP, temperature)
+
+    @staticmethod
     def set_brightness_belief(brightness: int) -> "Action":
         """Sets brightness belief of the light as percentage value, 1-100."""
         return Action(Action.SET_STATE_BELIEF, {"brightness": brightness})
@@ -174,6 +196,11 @@ class Action:
     def set_flame(flame: int) -> "Action":
         """Sets the flame to given intensity in percent."""
         return Action(Action.SET_FLAME, flame)
+
+    @staticmethod
+    def set_position(position: int) -> "Action":
+        """Sets shade position percentage from 0 (open) to 100 (closed)."""
+        return Action(Action.SET_POSITION, position)
 
     @property
     def name(self) -> str:
