@@ -227,6 +227,16 @@ class Action:
         """Sets shade position percentage from 0 (open) to 100 (closed)."""
         return Action(Action.SET_POSITION, position)
 
+    @staticmethod
+    def increase_position(position: int) -> "Action":
+        """Closes the device by the specified percentage of the full range."""
+        return Action(Action.INCREASE_POSITION, position)
+
+    @staticmethod
+    def decrease_position(position: int) -> "Action":
+        """Opens the device by the specified percentage of the full range."""
+        return Action(Action.DECREASE_POSITION, position)
+
     @property
     def name(self) -> str:
         """Return name of this action."""
