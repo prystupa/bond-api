@@ -344,6 +344,54 @@ async def test_set_brightness(bond: Bond):
 
 
 @pytest.mark.asyncio
+async def test_set_color_temperature(bond: Bond):
+    """Tests set_color_temperature action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 3000}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/SetColorTemp",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.set_color_temperature(3000))
+
+
+@pytest.mark.asyncio
+async def test_increase_color_temperature(bond: Bond):
+    """Tests increase_color_temperature action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 100}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/IncreaseColorTemp",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.increase_color_temperature(100))
+
+
+@pytest.mark.asyncio
+async def test_decrease_color_temperature(bond: Bond):
+    """Tests decrease_color_temperature action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 100}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/DecreaseColorTemp",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.decrease_color_temperature(100))
+
+
+@pytest.mark.asyncio
 async def test_set_direction_forward(bond: Bond):
     """Tests set_direction action delegates to API with correct value for forward."""
     with aioresponses() as response:
@@ -389,3 +437,19 @@ async def test_set_flame(bond: Bond):
             callback=callback,
         )
         await bond.action("test-device-id", Action.set_flame(50))
+
+
+@pytest.mark.asyncio
+async def test_set_position(bond: Bond):
+    """Tests set_position action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 50}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/SetPosition",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.set_position(50))
