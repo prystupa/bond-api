@@ -453,3 +453,35 @@ async def test_set_position(bond: Bond):
             callback=callback,
         )
         await bond.action("test-device-id", Action.set_position(50))
+
+
+@pytest.mark.asyncio
+async def test_increase_position(bond: Bond):
+    """Tests increase_position action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 50}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/IncreasePosition",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.increase_position(50))
+
+
+@pytest.mark.asyncio
+async def test_decrease_position(bond: Bond):
+    """Tests decrease_position action delegates to API."""
+    with aioresponses() as response:
+
+        def callback(_url, **kwargs):
+            assert kwargs.get("json") == {"argument": 50}
+            return CallbackResult()
+
+        response.put(
+            "http://test-host/v2/devices/test-device-id/actions/DecreasePosition",
+            callback=callback,
+        )
+        await bond.action("test-device-id", Action.decrease_position(50))

@@ -57,14 +57,21 @@ class Action:
     INCREASE_COLOR_TEMP = "IncreaseColorTemp"
 
     # Fans
-    SET_SPEED = "SetSpeed"
-    INCREASE_SPEED = "IncreaseSpeed"
-    DECREASE_SPEED = "DecreaseSpeed"
-    BREEZE_ON = "BreezeOn"
     BREEZE_OFF = "BreezeOff"
+    BREEZE_ON = "BreezeOn"
+    DECREASE_SPEED = "DecreaseSpeed"
+    DIM_MODE = "DimMode"
+    INCREASE_SPEED = "IncreaseSpeed"
+    OEM_HOME_AWAY = "OEMHomeAway"
+    OEM_RANDOM = "OEMRandom"
+    OEM_RANDOM_TOGGLE = "OEMRandomToggle"
+    OEM_TIMER = "OEMTimer"
+    OEM_WALK_AWAY = "OEMWalkAway"
     SET_BREEZE = "SetBreeze"
     SET_DIRECTION = "SetDirection"
+    SET_SPEED = "SetSpeed"
     TOGGLE_DIRECTION = "ToggleDirection"
+    TOGGLE_LIGHT_TEMP = "ToggleLightTemp"
 
     # Fireplaces
     INCREASE_TEMPERATURE = "IncreaseTemperature"
@@ -77,15 +84,33 @@ class Action:
     SET_FLAME = "SetFlame"
 
     # Motorized Shades
-    OPEN = "Open"
     CLOSE = "Close"
-    TILT_OPEN = "TiltOpen"
-    TILT_CLOSE = "TiltClose"
+    CLOSE_NEXT = "CloseNext"
+    DECREASE_POSITION = "DecreasePosition"
+    ESC = "Esc"
     HOLD = "Hold"
+    INCREASE_POSITION = "IncreasePosition"
+    LONG_CLOSE = "LongClose"
+    LONG_HOLD = "LongHold"
+    LONG_OPEN = "LongOpen"
+    LONG_PAIR = "LongPair"
+    OPEN = "Open"
+    OPEN_NEXT = "OpenNext"
     PAIR = "Pair"
-    TOGGLE_OPEN = "ToggleOpen"
     PRESET = "Preset"
+    SAVE_LIMIT_BOTTOM_OEM = "SaveLimitBottomOEM"
+    SAVE_LIMIT_TOP_OEM = "SaveLimitTopOEM"
+    SET_LIMIT_BOTTOM_OEM = "SetLimitBottomOEM"
+    SET_LIMIT_TOP_OEM = "SetLimitTopOEM"
     SET_POSITION = "SetPosition"
+    TILT_CLOSE = "TiltClose"
+    TILT_LEFT = "TiltLeft"
+    TILT_LEFT_LONG = "TiltLeftLong"
+    TILT_OPEN = "TiltOpen"
+    TILT_RIGHT = "TiltRight"
+    TILT_RIGHT_LONG = "TiltRightLong"
+    TILT_STOP = "TiltStop"
+    TOGGLE_OPEN = "ToggleOpen"
 
     def __init__(self, name: str, argument: Any = None):
         self._name = name
@@ -201,6 +226,16 @@ class Action:
     def set_position(position: int) -> "Action":
         """Sets shade position percentage from 0 (open) to 100 (closed)."""
         return Action(Action.SET_POSITION, position)
+
+    @staticmethod
+    def increase_position(position: int) -> "Action":
+        """Closes the device by the specified percentage of the full range."""
+        return Action(Action.INCREASE_POSITION, position)
+
+    @staticmethod
+    def decrease_position(position: int) -> "Action":
+        """Opens the device by the specified percentage of the full range."""
+        return Action(Action.DECREASE_POSITION, position)
 
     @property
     def name(self) -> str:
