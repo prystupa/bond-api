@@ -41,7 +41,7 @@ class Bond:
     async def devices(self) -> List[str]:
         """Return the list of available device IDs reported by API."""
         json = await self.__get("/v2/devices")
-        return [key for key in json if key != "_"]
+        return [key for key in json if not key.startswith("_") and type(json[key]) is dict]
 
     async def device(self, device_id: str) -> dict:
         """Return main device metadata reported by API."""

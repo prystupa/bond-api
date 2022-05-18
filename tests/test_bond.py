@@ -66,8 +66,9 @@ async def test_devices(bond: Bond):
             "http://test-host/v2/devices",
             payload={
                 "_": "some-hash",
-                "device-1": "some-device-1",
-                "device-2": "some-device-2",
+                "__": "some-other-hash",
+                "device-1": {"_": "some-hash"},
+                "device-2": {"_": "some-hash"},
             },
         )
         actual = await bond.devices()
