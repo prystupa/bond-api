@@ -1,6 +1,7 @@
 """Bond Local API wrapper."""
 
 from typing import Any, Callable, List, Optional
+from xmlrpc.client import Boolean
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ServerDisconnectedError, ClientOSError
@@ -85,6 +86,11 @@ class Bond:
                     response.raise_for_status()
 
             await self.__call(put)
+            
+    async def supports_groups(self) -> Boolean:
+        """Return 'True' if the Bond supports the Groups feature."""
+        json = await self.__get("/v2/")
+        return "groups" in json 
 
     async def groups(self) -> List[str]:
         """Return the list of available group IDs reported by API."""

@@ -14,6 +14,48 @@ def bond_fixture():
 
 
 @pytest.mark.asyncio
+async def test_groups_supported(bond: Bond):
+    """Tests checking if Bond supports groups."""
+    with aioresponses() as response:
+        response.get(
+            "http://test-host/v2/",
+            payload={
+                    "_":"b7e976b1",
+                    "__":"00000000",
+                    "devices":{"_":"0b64ba79"},
+                    "signal":{"_":"00000000"},
+                    "groups":{"_":"71ce683b"},
+                    "sys":{"_":"89858d62"},
+                    "api":{"_":"d00c7b8f"},
+                    "bridge":{"_":"df239de9"},
+                    "token":{"_":"aa72441a"}
+                },
+        )
+        actual = await bond.supports_groups()
+        assert actual == True
+
+@pytest.mark.asyncio
+async def test_groups_unsupported(bond: Bond):
+    """Tests checking if Bond supports groups."""
+    with aioresponses() as response:
+        response.get(
+            "http://test-host/v2/",
+            payload={
+                    "_":"b7e976b1",
+                    "__":"00000000",
+                    "devices":{"_":"0b64ba79"},
+                    "signal":{"_":"00000000"},
+                    "sys":{"_":"89858d62"},
+                    "api":{"_":"d00c7b8f"},
+                    "bridge":{"_":"df239de9"},
+                    "token":{"_":"aa72441a"}
+                },
+        )
+        actual = await bond.supports_groups()
+        assert actual == False
+
+
+@pytest.mark.asyncio
 async def test_groups(bond: Bond):
     """Tests API to get a list of group IDs."""
     with aioresponses() as response:
