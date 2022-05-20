@@ -55,6 +55,10 @@ class Bond:
         """Return current device state reported by API."""
         return await self.__get(f"/v2/devices/{device_id}/state")
 
+    async def device_skeds(self, device_id: str) -> dict:
+        """Return current device schedules reported by API."""
+        return await self.__get(f"/v2/devices/{device_id}/skeds")
+
     async def action(self, device_id: str, action: Action) -> None:
         """Execute given action for a given device."""
         if action.name == Action.SET_STATE_BELIEF:
@@ -71,6 +75,54 @@ class Bond:
             await self.__call(patch)
         else:
             path = f"/v2/devices/{device_id}/actions/{action.name}"
+
+            async def put(session: ClientSession) -> None:
+                async with session.put(
+                    f"http://{self._host}{path}",
+                    **self._api_kwargs,
+                    json=action.argument,
+                ) as response:
+                    response.raise_for_status()
+
+            await self.__call(put)
+
+    async def groups(self) -> List[str]:
+        """Return the list of available group IDs reported by API."""
+        json = await self.__get("/v2/groups")
+        return [key for key in json if not key.startswith("_") and type(json[key]) is dict]
+
+    async def group(self, group_id: str) -> dict:
+        """Return main group metadata reported by API."""
+        return await self.__get(f"/v2/groups/{group_id}")
+
+    async def group_properties(self, group_id: str) -> dict:
+        """Return group properties reported by API."""
+        return await self.__get(f"/v2/groups/{group_id}/properties")
+
+    async def group_state(self, group_id: str) -> dict:
+        """Return current group state reported by API."""
+        return await self.__get(f"/v2/groups/{group_id}/state")
+
+    async def group_skeds(self, group_id: str) -> dict:
+        """Return current group schedules reported by API."""
+        return await self.__get(f"/v2/groups/{group_id}/skeds")
+
+    async def group_action(self, group_id: str, action: Action) -> None:
+        """Execute given action for a given group."""
+        if action.name == Action.SET_STATE_BELIEF:
+            path = f"/v2/groups/{group_id}/state"
+
+            async def patch(session: ClientSession) -> None:
+                async with session.patch(
+                    f"http://{self._host}{path}",
+                    **self._api_kwargs,
+                    json=action.argument,
+                ) as response:
+                    response.raise_for_status()
+
+            await self.__call(patch)
+        else:
+            path = f"/v2/groups/{group_id}/actions/{action.name}"
 
             async def put(session: ClientSession) -> None:
                 async with session.put(
