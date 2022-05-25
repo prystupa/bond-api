@@ -4,7 +4,7 @@ import pytest
 from aiohttp import ClientSession, ClientTimeout
 from aioresponses import CallbackResult, aioresponses
 
-from bond_api import Action, Bond, Direction
+from bond_async import Action, Bond, Direction
 
 
 @pytest.fixture(name="bond")

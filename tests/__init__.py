@@ -1,4 +1,4 @@
-"""bond-api unit tests."""
+"""bond-async unit tests."""
 
 from datetime import datetime
 import asyncio

@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from bond_api import BPUPSubscriptions, start_bpup
+from bond_async import BPUPSubscriptions, start_bpup
 
 
 async def main(ip_address):

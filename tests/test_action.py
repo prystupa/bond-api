@@ -1,6 +1,6 @@
 """Unit tests for Action."""
 
-from bond_api import Action
+from bond_async import Action
 
 
 def test_action_eq():

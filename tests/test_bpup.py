@@ -7,7 +7,7 @@ import pytest
 import datetime as dt
 
 from . import mock_time_changed
-from bond_api.bpup import BPUPSubscriptions, BPUProtocol, start_bpup
+from bond_async.bpup import BPUPSubscriptions, BPUProtocol, start_bpup
 
 MOCK_ADDR = ("127.0.0.1", 1)
 

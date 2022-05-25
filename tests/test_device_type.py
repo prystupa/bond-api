@@ -1,6 +1,6 @@
 """Unit tests for DeviceType."""
 
-from bond_api.device_type import DeviceType
+from bond_async.device_type import DeviceType
 
 
 def test_compare_device_types():

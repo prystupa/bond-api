@@ -1,4 +1,4 @@
-"""Setup script for bond-api."""
+"""Setup script for bond-async."""
 
 import pathlib
 
@@ -11,12 +11,12 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(
-    name="bond_api",
-    version="0.1.18",
+    name="bond_async",
+    version="0.1.19",
     packages=find_packages(exclude=['tests']),
 
-    author="Eugene Prystupa",
-    author_email="eugene.prystupa@gmail.com",
+    author="Olibra LLC",
+    author_email="mobiledev@olibra.io",
     description="Asynchronous Python wrapper library over Bond Local API",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -26,7 +26,7 @@ setup(
         "aiohttp>=3.6.1"
     ],
 
-    url="https://github.com/prystupa/bond-api",
+    url="https://github.com/bondhome/bond-async",
     license="MIT",
     classifiers=[
         "Intended Audience :: Developers",

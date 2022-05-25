@@ -1,12 +1,15 @@
-# bond-api
+# bond-async
 Asynchronous Python wrapper library over Bond Local API
+
+Forked from https://github.com/prystupa/bond-api
+Thanks @prystupa for the great work!
 
 ## Installation
 
 From PyPi:
 
 ```bash
-pip3 install bond-api
+pip3 install bond-async
 ```
 
 ## Library Usage
@@ -15,7 +18,7 @@ import asyncio
 
 from aiohttp import ClientResponseError, ClientConnectorError
 
-from bond_api import Bond, Action
+from bond_async import Bond, Action
 
 
 async def main():
