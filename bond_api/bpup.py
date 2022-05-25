@@ -49,7 +49,7 @@ class BPUPSubscriptions:
         device_id = topic[1]
 
         for callback in self._callbacks.get(device_id, []):
-            callback(json_msg["b"])
+            callback(json_msg)
 
 
 class BPUProtocol(asyncio.Protocol):
