@@ -140,12 +140,16 @@ async def test_protocol_subscriptions(transport, caplog):
     )
 
     assert last_msg == {
-        "_": "690b6aff",
-        "breeze": [0, 50, 50],
-        "power": 1,
-        "speed": 1,
-        "timer": 0,
-    }
+        "t":"devices/1/state",
+        "s":200,
+        "b":{
+            "power":1,
+            "speed":1,
+            "timer":0,
+            "breeze":[0,50,50],
+            "_":"690b6aff"
+            }
+        }
 
     bpup_protocol.datagram_received(
         b'{"t":"devices/1/state","s":200,"b":{"power":1,"speed":1,"timer":0,"breeze":[0,50,50],"_":"690b6aff"}}\n',
@@ -153,12 +157,16 @@ async def test_protocol_subscriptions(transport, caplog):
     )
     # 500 error should not trigger a new message
     assert last_msg == {
-        "_": "690b6aff",
-        "breeze": [0, 50, 50],
-        "power": 1,
-        "speed": 1,
-        "timer": 0,
-    }
+        "t":"devices/1/state",
+        "s":200,
+        "b":{
+            "power":1,
+            "speed":1,
+            "timer":0,
+            "breeze":[0,50,50],
+            "_":"690b6aff"
+            }
+        }
 
     last_msg = {}
     bpup_subscriptions.unsubscribe("1", _on_new_message)
