@@ -6,6 +6,8 @@ from xmlrpc.client import Boolean
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ServerDisconnectedError, ClientOSError
 
+from bond_async.bond_type import BondType
+
 from .action import Action
 
 
@@ -28,8 +30,13 @@ class Bond:
         self._session = session
 
     async def version(self) -> dict:
-        """Return the version of hub/bridge reported by API."""
+        """Return the version of Bond reported by API."""
         return await self.__get("/v2/sys/version")
+
+    async def bond_type(self) -> BondType:
+        """Return the BondType based on the serial number reported by API."""
+        version = await self.version()
+        return BondType.from_serial(version["bondid"])
 
     async def token(self) -> dict:
         """Return the token after power rest or proof of ownership event."""
